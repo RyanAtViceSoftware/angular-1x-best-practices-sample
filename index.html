@@ -1,0 +1,47 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Blog</title>
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body ng-app="app" ng-controller="BlogController">
+	<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<span class="navbar-brand" href="#">Awesome Blog</span>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container">
+
+		<div class="jumbotron">
+			<label for="searchBox">Posts by <span ng-bind="userName"></span></label>
+			<div class="input-group">
+				<input name="searchBox" type="text" class="form-control" placeholder="Find posts by..." ng-model="userToFind">
+				<span class="input-group-btn">
+					<button class="btn btn-primary" type="button" ng-click="search()">
+						<span ng-show="isBusy" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span>				
+						<span ng-hide="isBusy" class="glyphicon glyphicon-search" aria-hidden="true"></span>
+					</button>
+				</span>
+			</div>      
+		</div>
+		
+		<div class="row" ng-repeat="post in posts">
+			<div class="col-lg-12 text-center">
+				<a href="#"><span ng-bind="post.title"></span></a>
+			</div>         
+		</div>
+	</div>
+	<!-- /.row -->
+
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
