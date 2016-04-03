@@ -4,12 +4,11 @@
 describe('BlogController ', function() {
 	beforeEach(module('app'));
 
-	var sut, $scope, $injector, $httpBackend;
+	var sut, $scope, $httpBackend;
 
-	beforeEach(inject(function($controller, _$injector_, _$httpBackend_){
+	beforeEach(inject(function($controller, _$httpBackend_){
 		$scope = {};
 		sut = $controller('BlogController', { $scope: $scope });
-		$injector = _$injector_;
 		$httpBackend = _$httpBackend_;
 	}));
 
