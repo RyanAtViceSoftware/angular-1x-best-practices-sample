@@ -13,7 +13,6 @@
 
 		vm.search = function() {
 			vm.isBusy = true;
-
 			$http.get(
 				'http://jsonplaceholder.typicode.com/users', 
 				{ params: { username: vm.userToFind}})
