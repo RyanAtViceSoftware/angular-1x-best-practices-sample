@@ -4,21 +4,20 @@
 describe('BlogController ', function() {
 	beforeEach(module('app'));
 
-	var sut, $scope, $httpBackend;
+	var sut, $httpBackend;
 
 	beforeEach(inject(function($controller, _$httpBackend_){
-		$scope = {};
-		sut = $controller('BlogController', { $scope: $scope });
+		sut = $controller('BlogController');
 		$httpBackend = _$httpBackend_;
 	}));
 
 	describe('on init ', function() {
 		it('$scope.userName, isBusy and userToFind should be falsy and posts should be an emtpy array', function() {
-			expect($scope.model.userName).toBeFalsy();
-			expect($scope.model.userToFind).toBeFalsy();
-			expect($scope.model.isBusy).toBeFalsy();
-			expect($scope.model.posts).toBeDefined();
-			expect($scope.model.posts.length).toBe(0);
+			expect(sut.userName).toBeFalsy();
+			expect(sut.userToFind).toBeFalsy();
+			expect(sut.isBusy).toBeFalsy();
+			expect(sut.posts).toBeDefined();
+			expect(sut.posts.length).toBe(0);
 		});
 	});
 
@@ -29,23 +28,21 @@ describe('BlogController ', function() {
 			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=1')
 				.respond({});
 
-			expect($scope.model.isBusy).toBeFalsy();
+			expect(sut.isBusy).toBeFalsy();
 
-			$scope.search();
+			sut.search();
 
-			expect($scope.model.isBusy).toBeTruthy();
+			expect(sut.isBusy).toBeTruthy();
 
 			$httpBackend.flush();
 
-			expect($scope.model.isBusy).toBeFalsy();
+			expect(sut.isBusy).toBeFalsy();
 		});
 
 		it('isBusy should toggle correctly', function() {
 			var expectedUser = 'expectedUser';
-			$scope.model = { 
-				userToFind: expectedUser,
-				posts: []
-			};
+			sut.userToFind = expectedUser;
+			sut.posts = [];
 
 			var expectedUserId = 1;
 			var expectedPosts = [{ foo: 'bar' }];
@@ -55,20 +52,20 @@ describe('BlogController ', function() {
 			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=' + expectedUserId)
 				.respond(expectedPosts);
 
-			$scope.search();
+			sut.search();
+
+			expect(sut.isBusy).toBeTruthy();
 
 			$httpBackend.flush();
 
-			expect($scope.model.posts).toEqual(expectedPosts);
+			expect(sut.posts).toEqual(expectedPosts);
 		});
 
 		it('error getting user should set error property', function() {
 			var expectedUser = 'expectedUser';
-			$scope.model = { 
-				userToFind: expectedUser,
-				posts: [],
-				error: null
-			};
+			sut.userToFind = expectedUser;
+			sut.posts = []
+			sut.error = null;
 
 			var expectedUserId = 1;
 			var expectedPosts = [{ foo: 'bar' }];
@@ -78,20 +75,18 @@ describe('BlogController ', function() {
 				    return [500, '', {}, 'error status text'];
 				});
 
-			$scope.search();
+			sut.search();
 
 			$httpBackend.flush();
 
-			expect($scope.model.error).toBeTruthy();
+			expect(sut.error).toBeTruthy();
 		});
 
 		it('error getting posts should set error property', function() {
 			var expectedUser = 'expectedUser';
-			$scope.model = { 
-				userToFind: expectedUser,
-				posts: [],
-				error: null
-			};
+			sut.userToFind = expectedUser;
+			sut.posts = []
+			sut.error = null;
 
 			var expectedUserId = 1;
 			var expectedPosts = [{ foo: 'bar' }];
@@ -103,11 +98,11 @@ describe('BlogController ', function() {
 				    return [500, '', {}, 'error status text'];
 				});
 
-			$scope.search();
+			sut.search();
 
 			$httpBackend.flush();
 
-			expect($scope.model.error).toBeTruthy();
+			expect(sut.error).toBeTruthy();
 		});
 	});
 
@@ -126,6 +121,7 @@ describe('BlogSearchBox ', function() {
 		$rootScope = _$rootScope_;
 	}));
 
+	// Can't figure out how to test this one
 	it('Replaces the element with the appropriate content', function() {
 		var $scope = $rootScope.$new();
 		var expectedUserName = "expectedUser";
