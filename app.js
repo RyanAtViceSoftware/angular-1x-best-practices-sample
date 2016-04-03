@@ -3,15 +3,22 @@
 
 	var app = angular.module('app', []);
 
-	app.controller('BlogController', function ($http) {
+	////////////////////////////////////////////////////
+	// BlogController
+	////////////////////////////////////////////////////
+	app.controller('BlogController', BlogController);
+
+	BlogController.$inject = ['$http'];
+
+	function BlogController($http) {
 		var vm = this; // safe to use in callbacks
 		
 		vm.userName = "";
 		vm.posts = [],
 		vm.isBusy = false;
-		
+		vm.search = search;
 
-		vm.search = function() {
+		function search() {
 			vm.isBusy = true;
 			$http.get(
 				'http://jsonplaceholder.typicode.com/users', 
@@ -34,10 +41,14 @@
 			vm.error = error.statusText;
 			vm.isBusy = false;
 		}
+	}
 
-	});
+	////////////////////////////////////////////////////
+	// blogSearchBox
+	////////////////////////////////////////////////////
+	app.directive('blogSearchBox', blogSearchBox);
 
-	app.directive('blogSearchBox', function() {
+	function blogSearchBox() {
 		return {
 			restrict: 'E',
 			scope: {},
@@ -48,18 +59,7 @@
 			},
 			controllerAs: "blogSearchBoxVm",
 			controller: function() {},
-			template: '<div class="jumbotron">' +
-			'<label for="searchBox">{{"Posts by " + blogSearchBoxVm.userName}}</span></label>' +
-			'<div class="input-group">' +
-				'<input name="searchBox" type="text" class="form-control" placeholder="Find posts by..." ng-model="blogSearchBoxVm.userName">' +
-				'<span class="input-group-btn">' +
-					'<button class="btn btn-primary" type="button" ng-click="blogSearchBoxVm.onSearch()">' +
-						'<span ng-show="blogSearchBoxVm.isBusy" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span>' +
-						'<span ng-hide="blogSearchBoxVm.isBusy" class="glyphicon glyphicon-search" aria-hidden="true"></span>' +
-					'</button>' +
-				'</span>' +
-			'</div>' +     
-		'</div>'	
+			templateUrl: "blog-search.html" 	
 		};
-	});
+	}
 })();
