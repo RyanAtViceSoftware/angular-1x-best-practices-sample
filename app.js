@@ -17,25 +17,39 @@
 		vm.posts = [],
 		vm.isBusy = false;
 		vm.search = search;
+		vm.error = null;
 
 		function search() {
 			vm.isBusy = true;
-			$http.get(
-				'http://jsonplaceholder.typicode.com/users', 
-				{ params: { username: vm.userToFind}})
-				.then(function(user) {
-					$http.get(
-						'http://jsonplaceholder.typicode.com/posts', 
-						{ params: {userid: user.data[0].id}})
-					.then(function(posts) {
-						vm.posts.length = 0;
-						vm.posts = posts.data;
-						vm.isBusy = false;
-					})
-					.catch(handleError);
-				})
+			
+			getUser(vm.userToFind)
+				.then(getPostsByUser)
+				.then(updateModel)
 				.catch(handleError);
-		};
+		}
+
+		function getUser(userName) {
+			vm.error = null;
+
+			// return the promise to allow promise chaining
+			return $http.get(
+				'http://jsonplaceholder.typicode.com/users', 
+				{ params: { username: userName}});
+		}
+
+		function getPostsByUser(user) {
+			// return the promise to allow promise chaining
+			return $http.get(
+					'http://jsonplaceholder.typicode.com/posts', 
+					{ params: {userid: user.data[0].id}});
+		}
+
+		function updateModel(posts) {
+			vm.posts.length = 0;
+			vm.posts = posts.data;
+
+			vm.isBusy = false;
+		}
 
 		function handleError(error) {
 			vm.error = error.statusText;
