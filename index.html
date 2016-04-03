@@ -8,16 +8,19 @@
 	<link rel="stylesheet" href="styles.css"/>
 </head>
 
-<body ng-app="app" ng-controller="BlogController">
+<body ng-app="app" ng-controller="BlogController as blogVm">
 
 	<!-- Not important to concepts being covered -->
 	<div ng-include="'blog-nav-bar.html'"></div>
 
 	<div class="container">
 		
-		<blog-search-box></blog-search-box>
+		<blog-search-box 
+			user-name="blogVm.userName" 
+			on-search="blogVm.search()" 
+			is-busy="blogVm.isBusy"></blog-search-box>
 
-		<div class="row" ng-repeat="post in model.posts">
+		<div class="row" ng-repeat="post in blogVm.posts">
 			<div class="col-lg-12 text-center">
 				<a href="#"><span ng-bind="post.title"></span></a>
 			</div>         
