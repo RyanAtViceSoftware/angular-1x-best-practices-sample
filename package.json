@@ -1,0 +1,26 @@
+{
+  "name": "angular-1x-best-practices-sample",
+  "version": "1.0.0",
+  "description": "Sample code from my Angular 1.x Best Practices and Lessons Learned talk",
+  "main": "app.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanAtViceSoftware/angular-1x-best-practices-sample.git"
+  },
+  "author": "Ryan Vice",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RyanAtViceSoftware/angular-1x-best-practices-sample/issues"
+  },
+  "homepage": "https://github.com/RyanAtViceSoftware/angular-1x-best-practices-sample#readme",
+  "devDependencies": {
+    "http-server": "^0.9.0",
+    "jasmine": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-cli": "^0.1.2",
+    "karma-jasmine": "^0.3.8"
+  }
+}
