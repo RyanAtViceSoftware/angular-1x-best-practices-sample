@@ -24,19 +24,16 @@
 					.then(function(posts) {
 						vm.posts.length = 0;
 						vm.posts = posts.data;
-						vm.model.isBusy = false;
+						vm.isBusy = false;
 					})
 					.catch(handleError);
-
-						vm.isBusy = false;
-					});
 				})
 				.catch(handleError);
 		};
 
 		function handleError(error) {
-			$scope.model.error = error.statusText;
-			$scope.model.isBusy = false;
+			vm.error = error.statusText;
+			vm.isBusy = false;
 		}
 
 	});
@@ -58,8 +55,8 @@
 				'<input name="searchBox" type="text" class="form-control" placeholder="Find posts by..." ng-model="blogSearchBoxVm.userName">' +
 				'<span class="input-group-btn">' +
 					'<button class="btn btn-primary" type="button" ng-click="blogSearchBoxVm.onSearch()">' +
-						'<span ng-show="model.isBusy" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span>' +
-						'<span ng-hide="model.isBusy" class="glyphicon glyphicon-search" aria-hidden="true"></span>' +
+						'<span ng-show="blogSearchBoxVm.isBusy" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span>' +
+						'<span ng-hide="blogSearchBoxVm.isBusy" class="glyphicon glyphicon-search" aria-hidden="true"></span>' +
 					'</button>' +
 				'</span>' +
 			'</div>' +     
