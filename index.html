@@ -9,37 +9,20 @@
 </head>
 
 <body ng-app="app" ng-controller="BlogController">
-	<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<span class="navbar-brand" href="#">Awesome Blog</span>
-			</div>
-		</div>
-	</nav>
 
-	<!-- Page Content -->
+	<!-- Not important to concepts being covered -->
+	<div ng-include="'blog-nav-bar.html'"></div>
+
 	<div class="container">
-
-		<div class="jumbotron">
-			<label for="searchBox">Posts by <span ng-bind="userName"></span></label>
-			<div class="input-group">
-				<input name="searchBox" type="text" class="form-control" placeholder="Find posts by..." ng-model="userToFind">
-				<span class="input-group-btn">
-					<button class="btn btn-primary" type="button" ng-click="search()">
-						<span ng-show="isBusy" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span>				
-						<span ng-hide="isBusy" class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					</button>
-				</span>
-			</div>      
-		</div>
 		
-		<div class="row" ng-repeat="post in posts">
+		<blog-search-box></blog-search-box>
+
+		<div class="row" ng-repeat="post in model.posts">
 			<div class="col-lg-12 text-center">
 				<a href="#"><span ng-bind="post.title"></span></a>
 			</div>         
 		</div>
 	</div>
-	<!-- /.row -->
 
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="app.js"></script>
