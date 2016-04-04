@@ -57,11 +57,57 @@ describe('BlogController ', function() {
 
 			$scope.search();
 
-			expect($scope.model.isBusy).toBeTruthy();
-
 			$httpBackend.flush();
 
 			expect($scope.model.posts).toEqual(expectedPosts);
+		});
+
+		it('error getting user should set error property', function() {
+			var expectedUser = 'expectedUser';
+			$scope.model = { 
+				userToFind: expectedUser,
+				posts: [],
+				error: null
+			};
+
+			var expectedUserId = 1;
+			var expectedPosts = [{ foo: 'bar' }];
+
+			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/users?username=' + expectedUser)
+				.respond(function (method, url, data, headers) {
+				    return [500, '', {}, 'error status text'];
+				});
+
+			$scope.search();
+
+			$httpBackend.flush();
+
+			expect($scope.model.error).toBeTruthy();
+		});
+
+		it('error getting posts should set error property', function() {
+			var expectedUser = 'expectedUser';
+			$scope.model = { 
+				userToFind: expectedUser,
+				posts: [],
+				error: null
+			};
+
+			var expectedUserId = 1;
+			var expectedPosts = [{ foo: 'bar' }];
+
+			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/users?username=' + expectedUser)
+				.respond([{id: expectedUserId}]);
+			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=' + expectedUserId)
+				.respond(function (method, url, data, headers) {
+				    return [500, '', {}, 'error status text'];
+				});
+
+			$scope.search();
+
+			$httpBackend.flush();
+
+			expect($scope.model.error).toBeTruthy();
 		});
 	});
 
