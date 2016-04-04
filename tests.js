@@ -1,23 +1,23 @@
 /////////////////////////////////////////////////
-// Blog Controller
+// Blog
 /////////////////////////////////////////////////
-describe('BlogController ', function() {
+describe('Blog ', function() {
 	beforeEach(module('app'));
 
 	var sut, $httpBackend;
 
-	beforeEach(inject(function($controller, _$httpBackend_){
-		sut = $controller('BlogController');
+	beforeEach(inject(function(blog, _$httpBackend_){
+		sut = blog;
 		$httpBackend = _$httpBackend_;
 	}));
 
 	describe('on init ', function() {
 		it('$scope.userName, isBusy and userToFind should be falsy and posts should be an emtpy array', function() {
-			expect(sut.userName).toBeFalsy();
-			expect(sut.userToFind).toBeFalsy();
-			expect(sut.isBusy).toBeFalsy();
-			expect(sut.posts).toBeDefined();
-			expect(sut.posts.length).toBe(0);
+			expect(sut.model.userName).toBeFalsy();
+			expect(sut.model.userToFind).toBeFalsy();
+			expect(sut.model.isBusy).toBeFalsy();
+			expect(sut.model.posts).toBeDefined();
+			expect(sut.model.posts.length).toBe(0);
 		});
 	});
 
@@ -28,49 +28,53 @@ describe('BlogController ', function() {
 			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=1')
 				.respond({});
 
-			expect(sut.isBusy).toBeFalsy();
+			expect(sut.model.isBusy).toBeFalsy();
 
 			sut.search();
 
-			expect(sut.isBusy).toBeTruthy();
+			expect(sut.model.isBusy).toBeTruthy();
 
 			$httpBackend.flush();
 
-			expect(sut.isBusy).toBeFalsy();
+			expect(sut.model.isBusy).toBeFalsy();
 		});
 
 		it('isBusy should toggle correctly', function() {
 			var expectedUser = 'expectedUser';
-			sut.userToFind = expectedUser;
-			sut.posts = [];
+			sut.model.userToFind = expectedUser;
 
 			var expectedUserId = 1;
 			var expectedPosts = [{ foo: 'bar' }];
 
-			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/users?username=' + expectedUser)
+			$httpBackend.expectGET(
+					'http://jsonplaceholder.typicode.com/users?username=' 
+					+ expectedUser)
 				.respond([{id: expectedUserId}]);
-			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=' + expectedUserId)
+
+			$httpBackend.expectGET(
+					'http://jsonplaceholder.typicode.com/posts?userid=' 
+					+ expectedUserId)
 				.respond(expectedPosts);
 
 			sut.search();
 
-			expect(sut.isBusy).toBeTruthy();
+			expect(sut.model.isBusy).toBeTruthy();
 
 			$httpBackend.flush();
 
-			expect(sut.posts).toEqual(expectedPosts);
+			expect(sut.model.posts).toEqual(expectedPosts);
 		});
 
 		it('error getting user should set error property', function() {
 			var expectedUser = 'expectedUser';
-			sut.userToFind = expectedUser;
-			sut.posts = []
-			sut.error = null;
+			sut.model.userToFind = expectedUser;
 
 			var expectedUserId = 1;
 			var expectedPosts = [{ foo: 'bar' }];
 
-			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/users?username=' + expectedUser)
+			$httpBackend.expectGET(
+					'http://jsonplaceholder.typicode.com/users?username=' 
+					+ expectedUser)
 				.respond(function (method, url, data, headers) {
 				    return [500, '', {}, 'error status text'];
 				});
@@ -79,21 +83,24 @@ describe('BlogController ', function() {
 
 			$httpBackend.flush();
 
-			expect(sut.error).toBeTruthy();
+			expect(sut.model.error).toBeTruthy();
 		});
 
 		it('error getting posts should set error property', function() {
 			var expectedUser = 'expectedUser';
-			sut.userToFind = expectedUser;
-			sut.posts = []
-			sut.error = null;
+			sut.model.userToFind = expectedUser;
 
 			var expectedUserId = 1;
 			var expectedPosts = [{ foo: 'bar' }];
 
-			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/users?username=' + expectedUser)
+			$httpBackend.expectGET(
+					'http://jsonplaceholder.typicode.com/users?username=' 
+					+ expectedUser)
 				.respond([{id: expectedUserId}]);
-			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=' + expectedUserId)
+
+			$httpBackend.expectGET(
+					'http://jsonplaceholder.typicode.com/posts?userid=' 
+					+ expectedUserId)
 				.respond(function (method, url, data, headers) {
 				    return [500, '', {}, 'error status text'];
 				});
@@ -102,14 +109,14 @@ describe('BlogController ', function() {
 
 			$httpBackend.flush();
 
-			expect(sut.error).toBeTruthy();
+			expect(sut.model.error).toBeTruthy();
 		});
 	});
 
 });
 
 /////////////////////////////////////////////////
-// Blog Controller
+// Blog Search Box
 /////////////////////////////////////////////////
 describe('BlogSearchBox ', function() {
 	beforeEach(module('app'));
