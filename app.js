@@ -7,12 +7,15 @@
 		$scope.model = {
 			userName: "",
 			posts: [],
-			isBusy: false
+			isBusy: false,
+			error: null
 		};
 		
 
 		$scope.search = function() {
 			$scope.model.isBusy = true;
+			$scope.model.error = null;
+			
 			$http.get(
 				'http://jsonplaceholder.typicode.com/users', 
 				{ params: { username: $scope.model.userToFind}})
@@ -25,9 +28,17 @@
 						$scope.model.posts = posts.data;
 
 						$scope.model.isBusy = false;
-					});
+					})
+					.catch(handleError);
 				})
+				.catch(handleError);
 		};
+
+		function handleError(error) {
+			$scope.model.error = error.statusText;
+			$scope.model.isBusy = false;
+		}
+
 	});
 
 	app.directive('blogSearchBox', function() {
