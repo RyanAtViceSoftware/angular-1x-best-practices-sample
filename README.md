@@ -88,7 +88,7 @@ We generally start with VMs and let the service evolve with our code over time.
 **Branches**
 * stateful-services
 
-  ```stateful-services```
+```stateful-services```
 
 **Benifits**
   * Easier to test
