@@ -22,13 +22,14 @@
 	'use strict';
 	angular.module('app').factory('blog', blog);
 
-	blog.$inject = ['$http', 'users', 'posts'];
+	blog.$inject = ['$http', 'users', 'posts', 'albums', '$q'];
 
-	function blog($http, users, posts) {
+	function blog($http, users, posts, albums, $q) {
 		var service = {
 			model: {
 				userName: "",
 				posts: [],
+				albums: [],
 				isBusy: false,
 				search: search,
 				error: null
@@ -43,14 +44,24 @@
 			service.model.error = null;
 			
 			users.getUser(service.model.userToFind)
-				.then(posts.getPostsByUser)
+				.then(getAlbumsAndPostsByUser)
 				.then(updateModel)
 				.catch(handleError);
 		}
 
-		function updateModel(posts) {
+		function getAlbumsAndPostsByUser(data) {
+			return $q.all([
+				posts.getPostsByUser(data), 
+				albums.getAlbumsByUser(data)
+			]);
+		}
+
+		function updateModel(data) {
 			service.model.posts.length = 0;
-			service.model.posts = posts.data;
+			service.model.albums.length = 0;
+
+			service.model.posts = data[0].data;
+			service.model.albums = data[1].data;
 
 			service.model.isBusy = false;
 		}
@@ -88,6 +99,31 @@
 })();
 
 	////////////////////////////////////////////////////
+	// Albums - Data Service - Wraps API calls
+	////////////////////////////////////////////////////
+(function() {
+	'use strict';
+	angular.module('app').factory('albums', albums);
+
+	albums.$inject = ['$http'];
+
+	function albums($http) {
+		var service = {
+			getAlbumsByUser: getAlbumsByUser
+		};
+
+		return service;
+
+		function getAlbumsByUser(user) {
+			// return the promise to allow promise chaining
+			return $http.get(
+					'http://jsonplaceholder.typicode.com/albums', 
+					{ params: {userid: user.data[0].id}});
+		}
+	}
+})();
+
+	////////////////////////////////////////////////////
 	// Posts - Data Service - Wraps API calls
 	////////////////////////////////////////////////////
 (function() {
@@ -99,7 +135,7 @@
 	function posts($http) {
 		var service = {
 			getPostsByUser: getPostsByUser
-		}
+		};
 
 		return service;
 
