@@ -50,18 +50,18 @@
 		}
 
 		function getAlbumsAndPostsByUser(data) {
-			return $q.all([
-				posts.getPostsByUser(data), 
-				albums.getAlbumsByUser(data)
-			]);
+			return $q.all({
+				posts: posts.getPostsByUser(data), 
+				albums: albums.getAlbumsByUser(data)
+			});
 		}
 
 		function updateModel(data) {
 			service.model.posts.length = 0;
 			service.model.albums.length = 0;
 
-			service.model.posts = data[0].data;
-			service.model.albums = data[1].data;
+			service.model.posts = data.posts.data;
+			service.model.albums = data.albums.data;
 
 			service.model.isBusy = false;
 		}
