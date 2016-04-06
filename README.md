@@ -86,6 +86,8 @@ I also find that Domain Model appoarch works a little better than anemic model w
 We generally start with VMs and let the service evolve with our code over time.
 
 **Branches**
+* stateful-services-promise-mess 
+ ```git checkout stateful-services-promise-mess ```
 * stateful-services 
  ```git checkout stateful-services```
 
@@ -93,3 +95,39 @@ We generally start with VMs and let the service evolve with our code over time.
   * Easier to test
   * Allows for reuse across controllers, directives, filters, etc...
   * Tried and true patterns
+
+## Asynchronous Execution
+We've looked at synchronous promise execution (i.e. one after the other) now let's look at asynchronous promise execution.
+
+**Branches**
+* stateful-services-parrallel 
+ ```git checkout stateful-services-parrallel```
+* stateful-services-parrallel-2 
+ ```git checkout stateful-services-parrallel-2```
+
+**Benifits**
+  * Simplifies synchronizing code to run after all promises complete (i.e. busy spinner, model update, etc...)
+
+## Data Template Pattern
+Often we need to have our data drive what html is loaded in our view and to dynamically change the view as the data changes. Here's a simple pattern to accomplish this.
+
+**Branches**
+* data-template 
+ ```git data-template```
+
+**Benifits**
+  * Allows testing without config setting that break tests
+  * Simpler than creating a testing module
+
+## Module Oganization for Testing
+Sometimes our modules ```.config()``` can break tests. To fix this seperate your module into two modules 1) module for config 2) module for everything else. Then have config module depend on app module.
+
+**Branches**
+* routing 
+ ```git checkout routing```
+* routing-fixed-tests 
+ ```git routing-fixed-tests```
+
+**Benifits**
+  * Allows testing without config setting that break tests
+  * Simpler than creating a testing module
