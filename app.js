@@ -2,9 +2,26 @@
 	'use strict';
 
 	////////////////////////////////////////////////////
+	// App module config
+	////////////////////////////////////////////////////
+	angular.module('app', ['ui.router'])
+	.config(function($stateProvider, $urlRouterProvider) {
+		$urlRouterProvider.otherwise("/search");
+		$stateProvider
+			.state('search', {
+				url: "/search",
+				templateUrl: "search.html"
+			});
+	});
+})();
+
+(function() {
+	'use strict';
+
+	////////////////////////////////////////////////////
 	// BlogController
 	////////////////////////////////////////////////////
-	angular.module('app', []).controller('BlogController', BlogController);
+	angular.module('app').controller('BlogController', BlogController);
 
 	BlogController.$inject = ['blog'];
 
