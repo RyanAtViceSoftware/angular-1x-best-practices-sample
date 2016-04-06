@@ -1,0 +1,6 @@
+<h3 ng-show="blogVm.model.posts.length">Posts</h3>
+<div class="row" ng-repeat="post in blogVm.model.posts">
+	<div class="col-lg-12">
+		<a href="#"><span ng-bind="post.title"></span></a>
+	</div>
+</div>

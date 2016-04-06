@@ -12,6 +12,7 @@
 		// nothing interesting to test here
 		this.model = blog.model;
 		this.search = blog.search;
+		this.show = blog.show;
 	}
 })();
 
@@ -31,13 +32,18 @@
 				posts: [],
 				albums: [],
 				isBusy: false,
-				search: search,
-				error: null
+				error: null,
+				selectedTab: "posts.html"
 			},
-			search: search
+			search: search,
+			show: show
 		}
 
 		return service;
+
+		function show(tabToSow) {
+			service.model.selectedTab = tabToSow + '.html';
+		}
 
 		function search() {
 			service.model.isBusy = true;

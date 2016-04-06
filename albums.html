@@ -1,0 +1,6 @@
+<h3 ng-show="blogVm.model.albums.length">Albums</h3>
+<div class="row" ng-repeat="album in blogVm.model.albums">
+	<div class="col-lg-12">
+		<a href="#"><span ng-bind="album.title"></span></a>
+	</div>
+</div>

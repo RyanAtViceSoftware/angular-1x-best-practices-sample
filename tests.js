@@ -27,6 +27,8 @@ describe('Blog ', function() {
 				.respond([{id: 1}]);
 			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/posts?userid=1')
 				.respond({});
+			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/albums?userid=1')
+				.respond({});
 
 			expect(sut.model.isBusy).toBeFalsy();
 
@@ -39,7 +41,7 @@ describe('Blog ', function() {
 			expect(sut.model.isBusy).toBeFalsy();
 		});
 
-		it('isBusy should toggle correctly', function() {
+		it('should return posts', function() {
 			var expectedUser = 'expectedUser';
 			sut.model.userToFind = expectedUser;
 
@@ -55,10 +57,10 @@ describe('Blog ', function() {
 					'http://jsonplaceholder.typicode.com/posts?userid=' 
 					+ expectedUserId)
 				.respond(expectedPosts);
+			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/albums?userid=1')
+				.respond({});
 
 			sut.search();
-
-			expect(sut.model.isBusy).toBeTruthy();
 
 			$httpBackend.flush();
 
@@ -104,6 +106,9 @@ describe('Blog ', function() {
 				.respond(function (method, url, data, headers) {
 				    return [500, '', {}, 'error status text'];
 				});
+
+			$httpBackend.expectGET('http://jsonplaceholder.typicode.com/albums?userid=1')
+				.respond({});
 
 			sut.search();
 
