@@ -10,8 +10,33 @@
 
 	function BlogController(blog) {
 		// nothing interesting to test here
-		this.model = blog.model;
-		this.search = blog.search;
+		var vm = this;
+		vm.model = {
+				userName: "",
+				posts: [],
+				isBusy: false,
+				error: null
+			};
+
+		vm.search = function(){
+			vm.model.isBusy = true;
+			
+			blog.search(vm.model.userName)
+				.then(updateModel)
+				.catch(handleError);
+		}
+
+		function updateModel(posts) {
+			vm.model.posts.length = 0;
+			vm.model.posts = posts.data;
+
+			vm.model.isBusy = false;
+		}
+
+		function handleError(error) {
+			vm.model.error = error.statusText;
+			vm.model.isBusy = false;
+		}
 	}
 })();
 
@@ -22,42 +47,38 @@
 	'use strict';
 	angular.module('app').factory('blog', blog);
 
-	blog.$inject = ['$http', 'users', 'posts'];
+	blog.$inject = ['$http', 'users', 'posts', '$q', '$log'];
 
-	function blog($http, users, posts) {
+	function blog($http, users, posts, $q, log) {
 		var service = {
-			model: {
-				userName: "",
-				posts: [],
-				isBusy: false,
-				search: search,
-				error: null
-			},
 			search: search
 		}
 
 		return service;
 
-		function search() {
-			service.model.isBusy = true;
-			service.model.error = null;
+		function search(userToFind) {
+			var deferred = $q.defer();
 			
-			users.getUser(service.model.userToFind)
-				.then(posts.getPostsByUser)
-				.then(updateModel)
-				.catch(handleError);
+			users.getUser(userToFind)
+				.then(function (user) {
+					posts.getPostsByUser(user)
+					.then(function(posts) {
+						deferred.resolve(posts);
+					})
+					.catch(function(error) {
+						handleError(deferred, error);
+					});
+				})
+				.catch(function(error) {
+					handleError(deferred, error);
+				});
+
+			return deferred.promise;
 		}
 
-		function updateModel(posts) {
-			service.model.posts.length = 0;
-			service.model.posts = posts.data;
-
-			service.model.isBusy = false;
-		}
-
-		function handleError(error) {
-			service.model.error = error.statusText;
-			service.model.isBusy = false;
+		function handleError(deffered, error) {
+			$log.error(error);
+			deferred.reject(error);
 		}
 	}
 })();
@@ -69,9 +90,9 @@
 	'use strict';
 	angular.module('app').factory('users', users);
 
-	users.$inject = ['$http'];
+	users.$inject = ['$http', '$q', '$log'];
 
-	function users($http) {
+	function users($http, $q, $log) {
 		var service = {
 			getUser: getUser
 		}
@@ -83,6 +104,24 @@
 			return $http.get(
 				'http://jsonplaceholder.typicode.com/users', 
 				{ params: { username: userName}});
+
+			var deferred = $q.defer();
+
+			// return the promise to allow promise chaining
+			$http.get(
+				'http://jsonplaceholder.typicode.com/users', 
+				{ params: { username: userName}})
+			.then(function(data) {
+				deferred.resolve(data);
+			})
+			.catch(function(error) {
+				$log.error(
+					"Unable to retrieve user details for user: "
+					+ userName);
+				deferred.reject(error);
+			});
+
+			return deferred.promise;
 		}
 	}
 })();
@@ -94,9 +133,9 @@
 	'use strict';
 	angular.module('app').factory('posts', posts);
 
-	posts.$inject = ['$http'];
+	posts.$inject = ['$http', '$q', '$log'];
 
-	function posts($http) {
+	function posts($http, $q, $log) {
 		var service = {
 			getPostsByUser: getPostsByUser
 		}
@@ -104,10 +143,23 @@
 		return service;
 
 		function getPostsByUser(user) {
+			var deferred = $q.defer();
+
 			// return the promise to allow promise chaining
-			return $http.get(
+			$http.get(
 					'http://jsonplaceholder.typicode.com/posts', 
-					{ params: {userid: user.data[0].id}});
+					{ params: {userid: user.data[0].id}})
+			.then(function(data) {
+				deferred.resolve(data);
+			})
+			.catch(function(error) {
+				$log.error(
+					"Unable to retrieve blog posts for user: "
+					+ user.data[0].username);
+				deferred.reject(error);
+			});
+
+			return deferred.promise;
 		}
 	}
 })();
