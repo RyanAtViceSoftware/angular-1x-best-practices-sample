@@ -226,10 +226,10 @@ Our code is still very easy to reason about and allows for simple clean promise 
 
 
 **Branches**
-* stateful-services-parrallel 
- ```git checkout stateful-services-parrallel```
-* stateful-services-parrallel-2 
- ```git checkout stateful-services-parrallel-2```
+* stateful-services-repeat 
+ ```git checkout stateful-services-repeat```
+
+ Note: I moved the code into an app folder for this branch so you will have to run ```http-server``` from the app folder.
 
 **Benifits**
-  * Simplifies synchronizing code to run after all promises complete (i.e. busy spinner, model update, etc...)
+  * Allows using stateful services in repeated controllers
