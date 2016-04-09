@@ -10,7 +10,8 @@
 		$stateProvider
 			.state('search', {
 				url: "/search",
-				templateUrl: "search.html"
+				templateUrl: "search.html",
+				controller: ""
 			});
 	});
 })();
@@ -33,6 +34,21 @@
 	}
 })();
 
+(function() {
+	'use strict';
+
+	////////////////////////////////////////////////////
+	// AblumController
+	////////////////////////////////////////////////////
+	angular.module('app').controller('AlbumController', AlbumController);
+
+	AlbumController.$inject = ['blog'];
+
+	function AlbumController(blog) {
+		this.showPreview = blog.getPhotos;
+	}
+})();
+
 	////////////////////////////////////////////////////
 	// Blog - Stateful Service (VM, Domaain Model)
 	////////////////////////////////////////////////////
@@ -40,9 +56,9 @@
 	'use strict';
 	angular.module('app').factory('blog', blog);
 
-	blog.$inject = ['$http', 'users', 'posts', 'albums', '$q'];
+	blog.$inject = ['$http', 'users', 'posts', 'albums', '$q', 'photos'];
 
-	function blog($http, users, posts, albums, $q) {
+	function blog($http, users, posts, albums, $q, photos) {
 		var service = {
 			model: {
 				userName: "",
@@ -50,13 +66,23 @@
 				albums: [],
 				isBusy: false,
 				error: null,
-				selectedTab: "posts.html"
+				selectedTab: "albums.html"
 			},
 			search: search,
-			show: show
+			show: show,
+			getPhotos: getPhotos
 		}
 
 		return service;
+
+		function getPhotos(ablumId) {
+			service.model.isBusy = true;
+			service.model.error = null;
+
+			photos.getPhotos(ablumId)
+				.then(updatePhotos)
+				.catch(handleError);
+		}
 
 		function show(tabToSow) {
 			service.model.selectedTab = tabToSow + '.html';
@@ -79,6 +105,17 @@
 			});
 		}
 
+		function updatePhotos(response) {
+			for(var i=0;i<service.model.albums.length;i++) {
+				if(service.model.albums[i].id === response.data[0].albumId) {
+					service.model.albums[i].photos = response.data;
+					break;
+				}
+			}
+
+			service.model.isBusy = false;
+		}
+
 		function updateModel(data) {
 			service.model.posts.length = 0;
 			service.model.albums.length = 0;
@@ -92,6 +129,30 @@
 		function handleError(error) {
 			service.model.error = error.statusText;
 			service.model.isBusy = false;
+		}
+	}
+})();
+
+	////////////////////////////////////////////////////
+	// Photos - Data Service - Wraps API calls
+	////////////////////////////////////////////////////
+(function() {
+	'use strict';
+	angular.module('app').factory('photos', users);
+
+	users.$inject = ['$http'];
+
+	function users($http) {
+		var service = {
+			getPhotos: getPhotos
+		}
+
+		return service;
+
+		function getPhotos(albumId) {
+			// return the promise to allow promise chaining
+			return $http.get(
+				'http://jsonplaceholder.typicode.com/albums/' + albumId + '/photos');
 		}
 	}
 })();

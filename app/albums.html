@@ -1,0 +1,16 @@
+<h3 ng-show="blogVm.model.albums.length">Albums</h3>
+<div class="row" ng-repeat="album in blogVm.model.albums">
+	<div class="col-lg-12" ng-controller="AlbumController as albumVm">
+		<div class="row">
+		  <div class="col-sm-6 col-md-4">
+		    <div class="thumbnail">
+		      <img ng-if="album.photos" ng-src="{{album.photos[0].thumbnailUrl}}">
+		      <div class="caption">
+		        <h3><span ng-bind="album.title"></span></h3>
+		        <a class="btn btn-primary" role="button" ng-click="albumVm.showPreview(album.id)">Preview</a> 
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</div>
+</div>

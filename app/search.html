@@ -6,8 +6,8 @@
 <div class="row" 
 	ng-if="blogVm.model.posts.length || blogVm.model.albums.length">
 	<ul class="nav nav-tabs">
-		<li role="presentation" ng-class="{active: blogVm.model.selectedTab === 'posts.html'}"><a ng-click="blogVm.show('posts')" href="#">Posts</a></li>
 		<li role="presentation" ng-class="{active: blogVm.model.selectedTab === 'albums.html'}"><a ng-click="blogVm.show('albums')" href="#">Albums</a></li>
+		<li role="presentation" ng-class="{active: blogVm.model.selectedTab === 'posts.html'}"><a ng-click="blogVm.show('posts')" href="#">Posts</a></li>
 	</ul>
 </div>
 <div class="row">
